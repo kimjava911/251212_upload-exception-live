@@ -16,7 +16,8 @@ spring:
     multipart:
       enabled: true # 업로드 기능 활성화 -> mvc
       # 개별 파일 최대 크기
-      max-file-size: 10MB
+#      max-file-size: 10MB
+      max-file-size: 5MB
       # 전체 요청 최대 크기
       max-request-size: 30MB
       # 별도 저장 없이 메모리에서 처리

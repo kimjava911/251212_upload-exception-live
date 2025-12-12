@@ -1,6 +1,8 @@
 package kr.java.upload_exception.controller;
 
 import jakarta.validation.Valid;
+import kr.java.upload_exception.exception.FileStorageException;
+import kr.java.upload_exception.exception.InvalidFileTypeException;
 import kr.java.upload_exception.model.entity.Review;
 import kr.java.upload_exception.service.ReviewService;
 import lombok.RequiredArgsConstructor;
@@ -16,6 +18,13 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 @RequiredArgsConstructor
 public class ReviewController {
     private final ReviewService reviewService;
+
+    // http://localhost:8080/reviews/100
+    @ExceptionHandler(IllegalArgumentException.class)
+    public String handleNotFound(IllegalArgumentException e, Model model) {
+        model.addAttribute("errorMessage", e.getMessage());
+        return "error/404"; // 포워딩.
+    }
 
     // 리뷰 목록 페이지
     // GET http://localhost:8080/reviews/
@@ -46,16 +55,30 @@ public class ReviewController {
             Model model,
             RedirectAttributes redirectAttributes
             ) {
+        // 에러를 bindingResult 안에 담음 (검증) -> throw가 발생되지 않음
         if (bindingResult.hasErrors()) {
             model.addAttribute("pageName", "리뷰 작성");
             model.addAttribute("bindingResult", bindingResult);
             return "review/form";
         }
-        reviewService.create(review, imageFile);
 
-        redirectAttributes.addFlashAttribute("message", "리뷰가 등록되었습니다.");
-
-        return "redirect:/reviews";
+        try {
+            reviewService.create(review, imageFile);
+            redirectAttributes.addFlashAttribute("message", "리뷰가 등록되었습니다.");
+            return "redirect:/reviews";
+        } catch (InvalidFileTypeException e) {
+            // 파일 타입 오류 -> 입력 데이터 유지하면서 폼으로 복귀
+            model.addAttribute("review", review);
+            model.addAttribute("errorMessage", e.getMessage());
+            return "review/form";
+        } catch (FileStorageException e) {
+            // 파일 저장 오류 -> 폼으로 복귀
+            model.addAttribute("review", review);
+            model.addAttribute("errorMessage", "파일 업로드 중 오류가 발생하였습니다.");
+            return "review/form";
+        }
+        // try-catch로 처리.
+        // -> Handler, Advice...
     }
 
 
@@ -85,6 +108,7 @@ public class ReviewController {
             Model model,
             RedirectAttributes redirectAttributes
     ) {
+
         if (bindingResult.hasErrors()) {
             model.addAttribute("pageName", "리뷰 수정");
             model.addAttribute("bindingResult", bindingResult);
