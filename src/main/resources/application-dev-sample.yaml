@@ -7,12 +7,13 @@ spring:
     # driver-class-name: com.mysql.cj.jdbc.Driver
   jpa:
     hibernate:
-      ddl-auto: create
-      # ddl-auto: update
+      # ddl-auto: create
+      ddl-auto: update
       naming:
+        # physical-strategy: org.hibernate.boot.model.naming.PhysicalNamingStrategyStandardImpl
         # createdAt -> created_at
         physical-strategy: org.hibernate.boot.model.naming.CamelCaseToUnderscoresNamingStrategy
-    show-sql: true
+    show-sql: true # 로그로 SQL
     properties:
       hibernate:
-        format_sql: true
+        format_sql: true # 로그에 나온 SQL이 줄바꿈 등 포맷팅

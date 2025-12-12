@@ -2,11 +2,13 @@ package kr.java.upload_exception.model.entity;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.hibernate.validator.constraints.Length;
 
 @Entity
 @Getter @Setter
@@ -14,17 +16,19 @@ import lombok.Setter;
 public class Review extends BaseEntity {
     // 리뷰 제목 (최대 100자, 필수)
     @NotBlank(message = "리뷰 제목은 필수입니다.")
-    @Column(nullable = false)
+    @Length(max = 100)
+    @Column(nullable = false, length = 100)
     private String title;
 
     // 리뷰 내용 (긴 텍스트 저장)
     @NotBlank(message = "리뷰 내용은 필수입니다.")
-    @Column(nullable = false)
+    @Column(nullable = false, columnDefinition = "TEXT")
+    // varchar -> 255 => columnDefinition -> TEXT.
     private String content;
 
     // 평점 (1~5 사이 정수)
     @Min(value = 1, message = "평점은 최소 1점 이상입니다.")
-    @Min(value = 5, message = "평점은 최대 5점 이하입니다.")
+    @Max(value = 5, message = "평점은 최대 5점 이하입니다.")
     @Column(nullable = false)
     private Integer rating;
 

@@ -1,10 +1,3 @@
-<%--
-  Created by IntelliJ IDEA.
-  User: morgan
-  Date: 25. 12. 12.
-  Time: 오전 12:02
-  To change this template use File | Settings | File Templates.
---%>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <head>
     <title>${param.pageName} - 리뷰 시스템</title>
