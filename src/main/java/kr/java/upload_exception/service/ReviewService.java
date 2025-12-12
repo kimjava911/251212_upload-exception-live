@@ -5,6 +5,7 @@ import kr.java.upload_exception.model.repository.ReviewRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
@@ -37,4 +38,42 @@ public class ReviewService {
         }
         return reviewRepository.save(review);
     }
+
+    // 수정
+    @Transactional
+    public Review update(Long id, Review updatedData, MultipartFile newImageFile) {
+        Review review = findById(id);
+
+        // JPA - 더티체킹 -> save.
+        review.setTitle(updatedData.getTitle());
+        review.setContent(updatedData.getContent());
+        review.setRating(updatedData.getRating());
+
+        if (newImageFile != null && !newImageFile.isEmpty()) {
+            // 기존 이미지 삭제
+            deleteOldImage(review.getImageUrl());
+            // 새 이미지 저장
+            String storedFilename = fileStorageService.store(newImageFile);
+            review.setImageUrl("/images/" + storedFilename);
+        }
+        return review;
+    }
+
+    // 기존 이미지 삭제
+    private void deleteOldImage(String imageUrl) {
+        if (StringUtils.hasText(imageUrl)) {
+            String filename = imageUrl.replace("/images/", "");
+            fileStorageService.delete(filename);
+        }
+    }
+
+    // 삭제
+    @Transactional
+    public void delete(Long id) {
+        Review review = findById(id);
+        deleteOldImage(review.getImageUrl());
+//        reviewRepository.delete(review);
+        reviewRepository.deleteById(id);
+    }
+
 }

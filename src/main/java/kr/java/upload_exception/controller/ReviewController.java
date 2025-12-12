@@ -38,7 +38,7 @@ public class ReviewController {
     }
 
     // POST -> data
-    @PostMapping("/new")
+    @PostMapping
     public String create(
             @Valid @ModelAttribute Review review,
             BindingResult bindingResult,
@@ -65,5 +65,44 @@ public class ReviewController {
         model.addAttribute("review", reviewService.findById(id));
         model.addAttribute("pageName", "리뷰 상세");
         return "review/detail";
+    }
+
+    // 리뷰 수정 폼
+    @GetMapping("/{id}/edit")
+    public String editForm(@PathVariable Long id, Model model) {
+        model.addAttribute("review", reviewService.findById(id));
+        model.addAttribute("pageName", "리뷰 수정");
+        return "review/edit";
+    }
+
+    // 리뷰 수정 처리
+    @PostMapping("/{id}/edit")
+    public String edit(
+            @PathVariable Long id,
+            @Valid @ModelAttribute Review review,
+            BindingResult bindingResult,
+            @RequestParam(value = "imageFile", required = false) MultipartFile imageFile,
+            Model model,
+            RedirectAttributes redirectAttributes
+    ) {
+        if (bindingResult.hasErrors()) {
+            model.addAttribute("pageName", "리뷰 수정");
+            model.addAttribute("bindingResult", bindingResult);
+            return "review/edit";
+        }
+        reviewService.update(id, review, imageFile);
+
+        redirectAttributes.addFlashAttribute("message", "리뷰가 수정되었습니다.");
+
+//        return "redirect:/reviews/{id}";
+        return "redirect:/reviews/" + id;
+    }
+
+    // 리뷰 삭제
+    @PostMapping("/{id}/delete")
+    public String delete(@PathVariable Long id, RedirectAttributes redirectAttributes) {
+        reviewService.delete(id);
+        redirectAttributes.addFlashAttribute("message", "리뷰가 삭제되었습니다.");
+        return "redirect:/reviews";
     }
 }

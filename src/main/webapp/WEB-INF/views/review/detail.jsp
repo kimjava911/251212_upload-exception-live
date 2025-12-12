@@ -44,7 +44,12 @@
 <hr>
 
 <p>
-    <%-- TODO : 수정 & 삭제 --%>
+    <a href="<c:url value='/reviews/${review.id}/edit'/>">수정</a>
+    <form action="<c:url value='/reviews/${review.id}/delete'/>"
+          method="post"
+          onsubmit="return confirm('정말 삭제하시겠습니까?');">
+        <button>삭제</button>
+    </form>
     <a href="<c:url value='/reviews'/>">목록으로</a>
 </p>
 
