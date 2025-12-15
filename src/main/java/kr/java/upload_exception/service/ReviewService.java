@@ -34,7 +34,9 @@ public class ReviewService {
         // 이미지 파일이 있으면 저장
         if (imageFile != null && !imageFile.isEmpty()) {
             String storedFilename = fileStorageService.store(imageFile);
-            review.setImageUrl("/images/" + storedFilename);
+//            review.setImageUrl("/images/" + storedFilename);
+            // storedFilename -> key
+            review.setImageUrl(fileStorageService.getUrl(storedFilename));
         }
         return reviewRepository.save(review);
     }
