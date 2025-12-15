@@ -22,17 +22,22 @@ spring:
   cloud:
     aws:
       region:
+        # Connection - S3 protocol connection - Region
         static: {}
       credentials:
+        # Access key ID
         access-key: {}
+        # Secret access key
         secret-key: {}
       s3:
+        # Connection - S3 protocol connection - Endpoint
         endpoint: {}
         path-style-access-enabled: true
 
 # @value
 aws:
   s3:
+    # 생성한 버킷명
     bucket: {}
 
 file:
