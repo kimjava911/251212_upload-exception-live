@@ -17,3 +17,25 @@ spring:
     properties:
       hibernate:
         format_sql: true # 로그에 나온 SQL이 줄바꿈 등 포맷팅
+  # S3
+  # spring:
+  cloud:
+    aws:
+      region:
+        static: {}
+      credentials:
+        access-key: {}
+        secret-key: {}
+      s3:
+        endpoint: {}
+        path-style-access-enabled: true
+
+# @value
+aws:
+  s3:
+    bucket: {}
+
+file:
+  storage:
+    type: local
+    # type: s3

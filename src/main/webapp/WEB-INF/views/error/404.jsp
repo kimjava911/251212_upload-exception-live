@@ -12,6 +12,8 @@
     <h1 style="color: #6c757d;">🔍 404</h1>
     <h2>페이지를 찾을 수 없습니다</h2>
 
+    <img src="<c:url value='/404.png'/>" />
+
     <c:choose>
         <c:when test="${not empty errorMessage}">
             <p>${errorMessage}</p>
