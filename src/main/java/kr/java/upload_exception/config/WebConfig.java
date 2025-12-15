@@ -14,16 +14,21 @@ public class WebConfig implements WebMvcConfigurer {
     @Value("${file.upload-dir}")
     private String uploadDir;
 
+    @Value("${file.storage.type}")
+    private String storageType;
+
     // addResourceHandlers
     @Override
     public void addResourceHandlers(ResourceHandlerRegistry registry) {
 //        WebMvcConfigurer.super.addResourceHandlers(registry);
 
-        String absolutePath = Paths.get(uploadDir)
-                .toAbsolutePath().normalize().toString();
+        if (storageType.equals("local")) {
+            String absolutePath = Paths.get(uploadDir)
+                    .toAbsolutePath().normalize().toString();
 
-        registry.addResourceHandler("/images/**")
-                .addResourceLocations("file:" + absolutePath + "/")
-                .setCachePeriod(3600); // 60 * 60 : 1시간
+            registry.addResourceHandler("/images/**")
+                    .addResourceLocations("file:" + absolutePath + "/")
+                    .setCachePeriod(3600); // 60 * 60 : 1시간
+        }
     }
 }
