@@ -4,6 +4,7 @@ import kr.java.upload_exception.exception.FileStorageException;
 import kr.java.upload_exception.exception.InvalidFileTypeException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
@@ -17,6 +18,11 @@ import java.util.UUID;
 
 @Service
 @Slf4j // 로그 출력을 위한 연결
+@ConditionalOnProperty(
+        name = "file.storage.type",
+        havingValue = "local",
+        matchIfMissing = true
+)
 public class LocalFileStorageService implements FileStorageService {
     // java.nio.file.Path
     private final Path uploadPath;
